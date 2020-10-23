@@ -54,14 +54,14 @@ class Goal extends Component {
           onPress={() => this.props.removeGoal(this.props.goal["key"])}
           title="X"
         />   
-      
-        <Text style={styles.goalText}>{this.props.name}</Text>
         
-        <Text style={styles.goalText}>{this.checkCompleted()}</Text>
-        
-        <Spacer numSpaces='1' />
-        <Text style={styles.goalText}>({this.calculatePercent()}%)</Text>
-        <Text style={styles.goalText}>{this.showBar()}</Text>
+        <View style={{padding:5}}>
+          <Text style={styles.goalText}>  {this.props.name}</Text>
+          <Text style={styles.goalText}>  {this.checkCompleted()}</Text>
+          <Spacer numSpaces='1' />
+          <Text style={styles.goalText}>  ({this.calculatePercent()}%)</Text>
+          <Text style={styles.goalText}>  {this.showBar()}</Text>
+        </View>
         
         {/*Add Funds Button*/}
         <Button

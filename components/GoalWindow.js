@@ -15,7 +15,7 @@ class GoalWindow extends Component {
     if(this.props.goals.length <= 0) {
       return(
         <View style={{alignSelf:'center', padding:10}}>
-          <Text style={styles.text}>No Goals Right Now. Add One Above!</Text>
+          <Text style={styles.text}>No Active Goals. Add One Above!</Text>
         </View>
       );
     } else {

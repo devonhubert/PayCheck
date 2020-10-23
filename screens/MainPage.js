@@ -116,12 +116,12 @@ class MainPage extends Component {
         "key":this.state.keyIndex
       }];
 
-      /*
+      
       this.setState({
         goals: newGoal.concat(this.state.goals), 
         keyIndex: this.state.keyIndex + 1,
       });
-      */
+      
 
 
       console.log("Goal Added");
@@ -170,7 +170,7 @@ class MainPage extends Component {
         <GoalWindow goals={this.state.goals} removeGoal={this.removeGoal} setGoalMoneyUsed={this.setGoalMoneyUsed}/>
       
         <View style={{padding:10, flexDirection:'row', alignItems:'center'}}>
-          <Text style={styles.text}>Logged in as {this.state.userEmail}    </Text>
+          <Text style={styles.text}>{this.state.userEmail}   </Text>
           <Button 
             color="#234041"
             title='Sign Out'

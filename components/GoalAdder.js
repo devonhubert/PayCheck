@@ -24,7 +24,7 @@ class GoalAdder extends Component {
       console.log("Goal Adder Rendered with Goal Name: " + this.state.goalName);
       return(
         <View style={{borderColor: '#234041', borderWidth: 1, width: 400, backgroundColor:'white'}}>
-          <View style={{flexDirection:'row'}}>
+          <View style={{flexDirection:'row', justifyContent:'center'}}>
             <View style={{flexDirection:'column', padding:10}}>
               {/*Goal Name Input*/}
               <Text style={styles.text}>Name</Text>
