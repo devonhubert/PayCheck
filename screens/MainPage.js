@@ -74,6 +74,20 @@ class MainPage extends Component {
     } 
   }
 
+  writeNewGoal = (goalName, moneyNeeded) => {
+    let newGoal = [{
+      "name": goalName, 
+      "needed": moneyNeeded, 
+      "earned":"0.0", 
+      "key":this.state.keyIndex
+    }];
+    
+    this.setState({
+      goals: newGoal.concat(this.state.goals), 
+      keyIndex: this.state.keyIndex + 1,
+    });
+  }
+
   writeMoneyEarned = (totalEarned) => {
     var user = firebase.auth().currentUser;
     if(user) {
@@ -136,21 +150,7 @@ class MainPage extends Component {
         {cancelable: false}
       );
     } else {
-      let newGoal = [{
-        "name": goalName, 
-        "needed": moneyNeeded, 
-        "earned":"0.0", 
-        "key":this.state.keyIndex
-      }];
-
-      
-      this.setState({
-        goals: newGoal.concat(this.state.goals), 
-        keyIndex: this.state.keyIndex + 1,
-      });
-      
-
-
+      this.writeNewGoal(goalName, moneyNeeded);
       console.log("Goal Added");
     }
   }
