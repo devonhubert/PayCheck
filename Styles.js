@@ -33,6 +33,12 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       backgroundColor: '#57b27a',
     },
+    outerContainer: {
+      flex: 1,
+      backgroundColor: '#fff',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
     textInput: {
       height: 35, 
       width: 100,
