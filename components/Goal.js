@@ -33,7 +33,7 @@ class Goal extends Component {
     let moneyAmount = 1.0;
   
     if(this.props.earned < Number(this.props.needed)) { //Check for floats
-      this.props.returnMoneyEarned(moneyAmount, this.props.earned, this.props.goal["key"]);
+      this.props.returnMoneyEarned(moneyAmount, this.props.earned, this.props.goal.key);
     }
   }
   
@@ -51,7 +51,7 @@ class Goal extends Component {
         {/*Remove Goal Button*/}
         <Button
           color="#234041"
-          onPress={() => this.props.removeGoal(this.props.goal["key"])}
+          onPress={() => this.props.removeGoal(this.props.goal.key)}
           title="X"
         />   
         

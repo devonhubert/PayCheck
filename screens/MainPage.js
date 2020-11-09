@@ -30,6 +30,7 @@ class MainPage extends Component {
   }
 
   componentDidMount() {
+    console.log("Component mounted (it did)");
     var user = firebase.auth().currentUser;
 
     if (user) {
@@ -55,44 +56,101 @@ class MainPage extends Component {
           });
         });
         
-        //pull total amount earned from database
-        firebase
-        .database()
-        .ref('/users/' + user.uid + '/user_app_data/total_earned/')
-        .on('value', snapShot => {
-          //let data = snapShot.val() ? snapShot.val() : {};
-          let total_earned = snapShot.val();
-          console.log("Total earned is: " + total_earned);
-          
-          this.setState({
-            moneyEarned: total_earned,
-          });
-          
-        });
-        
-
+        this.pullMoneyEarned(user);
+        this.pullKeyIndex(user);
+        this.pullGoals(user);
     } 
   }
 
-  writeNewGoal = (goalName, moneyNeeded) => {
-    let newGoal = [{
-      "name": goalName, 
-      "needed": moneyNeeded, 
-      "earned":"0.0", 
-      "key":this.state.keyIndex
-    }];
-    
-    this.setState({
-      goals: newGoal.concat(this.state.goals), 
-      keyIndex: this.state.keyIndex + 1,
-    });
+  pullMoneyEarned = (user) => {
+    console.log("Pull money earned called");
+    //user is not null
+    if(user) {
+      //pull total amount earned from database
+      firebase
+      .database()
+      .ref('/users/' + user.uid + '/user_app_data/total_earned/')
+      .on('value', snapShot => {
+        let total_earned = snapShot.val(); //check for 0?
+        console.log("Total earned is: " + total_earned);
+        
+        this.setState({
+          moneyEarned: total_earned,
+        });
+      });
+    }
   }
 
-  writeMoneyEarned = (totalEarned) => {
+  writeTotalMoneyEarned = (totalEarned) => {
     var user = firebase.auth().currentUser;
     if(user) {
       firebase.database().ref('users/' + user.uid + '/user_app_data/').update({
         total_earned: totalEarned,
+      });
+
+      //update state from database
+      this.pullMoneyEarned(user); //good?
+    }
+  }
+
+  pullGoals = (user) => {
+    console.log("Pull goals called");
+    //user is not null
+    if(user) {
+      //pull goals earned from database
+      firebase
+      .database()
+      .ref('/users/' + user.uid + '/user_app_data/goals/')
+      .on('value', snapShot => {
+        let goals = snapShot.val() ? snapShot.val() : [];
+        console.log("Current goal object: " + goals);
+        console.log("Length of goals: " + Object.keys(goals).length);
+
+        this.setState({
+          goals: goals, 
+        });
+        
+      });
+    } 
+  }
+
+  writeNewGoal = (goalName, moneyNeeded) => {
+    var user = firebase.auth().currentUser;
+
+    if (user) {
+      firebase.database().ref('users/' + user.uid + '/user_app_data/goals/' + this.state.keyIndex).update({
+        name: goalName,
+        needed: moneyNeeded,
+        earned: 0.0,
+        key: this.state.keyIndex,
+      });
+      this.pullGoals(user);
+
+      //Increment key index in database, and pull to state
+      firebase.database().ref('users/' + user.uid + '/user_app_data/').update({
+        key_index: this.state.keyIndex + 1, 
+      });
+      this.pullKeyIndex(user);
+    }
+  }
+
+  pullKeyIndex = (user) => {
+    console.log("Pull key index called");
+    //user is not null
+    if(user) {
+      //pull keyIndex from database
+      firebase
+      .database()
+      .ref('/users/' + user.uid + '/user_app_data/key_index')
+      .on('value', snapShot => {
+        //let data = snapShot.val() ? snapShot.val() : {};
+        let key_index = snapShot.val();
+        console.log("Key index is " + key_index);
+
+        this.setState({
+          keyIndex: key_index,
+        });
+        
       });
     }
   }
@@ -100,14 +158,23 @@ class MainPage extends Component {
   addTotalMoneyEarned = (earned) => {
     console.log("Add Total Money Earned Called with earned = " + earned);
     let newTotal = this.state.moneyEarned + earned;
-    this.setState({
-      moneyEarned: newTotal,
-    });
-    this.writeMoneyEarned(newTotal); //set state directly?
+    this.writeTotalMoneyEarned(newTotal); 
     console.log("Money Earned Updated");
   }
 
-  setGoalMoneyUsed = (earned, oldTotal, key) => {
+  writeGoalMoneyEarned = (goalKey, earned) => {
+    var user = firebase.auth().currentUser;
+    if(user) {
+      firebase.database().ref('users/' + user.uid + '/user_app_data/goals/' + goalKey).update({
+        earned: earned,
+      });
+
+      //pull updated goals from database
+      this.pullGoals(user); 
+    }
+  }
+
+  setGoalMoneyEarned = (earned, oldTotal, key) => {
     let goals = this.state.goals;
     
     if(earned > this.state.moneyEarned) {
@@ -122,12 +189,9 @@ class MainPage extends Component {
       console.log("old total was: " + oldTotal);
       let newTotal = Number(oldTotal) + Number(earned);
     
-      for (var i = goals.length - 1; i >= 0; i--) {
-        if (goals[i]["key"] == key) {
-          goals[i]["earned"] = newTotal;
-          console.log("Goal updated with new total: " + newTotal);
-        }
-      }
+      this.writeGoalMoneyEarned(key, newTotal);
+      console.log("Goal updated with new total: " + newTotal);
+      
       this.addTotalMoneyEarned(-1 * earned);
       console.log("Goal Money Used Updated for goal " + key);
     }
@@ -139,6 +203,13 @@ class MainPage extends Component {
       Alert.alert(
         "Not a Number",
         "Please enter a valid number, you silly! 😛",
+        [{text: "OK", onPress: () => console.log("OK Pressed")}],
+        {cancelable: false}
+      );
+    } else if(goalName == "") {
+      Alert.alert(
+        "Invalid Entry",
+        "Your goal needs a name!",
         [{text: "OK", onPress: () => console.log("OK Pressed")}],
         {cancelable: false}
       );
@@ -154,23 +225,16 @@ class MainPage extends Component {
       console.log("Goal Added");
     }
   }
-  
-  removeGoalWithKey = (key) => {
-    console.log("Removing goal with key: " + key);
-    let goals = this.state.goals;
-    for (var i = goals.length - 1; i >= 0; i--) {
-      if (goals[i]["key"] == key) {
-        goals.splice(i, 1);
-      }
-    }
-    return goals;
-  }
 
   removeGoal = (key) => {
-    this.setState({
-      goals: this.removeGoalWithKey(key),
-    });
-    console.log("Goal Removed");
+    var user = firebase.auth().currentUser;
+
+    if(user) {
+      firebase.database().ref('users/' + user.uid + '/user_app_data/goals/' + key).remove();
+      
+      this.pullGoals(user);
+      console.log("Goal Removed");
+    }
   }
   
   render() {
@@ -194,7 +258,7 @@ class MainPage extends Component {
         
         <GoalAdder addGoal={this.addGoal.bind(this)} />
 
-        <GoalWindow goals={this.state.goals} removeGoal={this.removeGoal} setGoalMoneyUsed={this.setGoalMoneyUsed}/>
+        <GoalWindow goals={this.state.goals} removeGoal={this.removeGoal} setGoalMoneyEarned={this.setGoalMoneyEarned}/>
       
         <View style={{padding:10, flexDirection:'row', alignItems:'center'}}>
           <Text style={styles.text}>{this.state.userEmail}   </Text>
