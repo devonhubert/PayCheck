@@ -60,6 +60,18 @@ class LoginScreen extends Component {
                 .then(function (snapshot) {
                   // console.log('Snapshot', snapshot);
                 });
+                
+                
+                //set initial app user info
+                firebase
+                .database()
+                .ref('/users/' + result.user.uid + '/user_app_data')
+                .set({
+                  total_earned: 0,
+                  key_index: 0,
+                })
+                
+                
             } else {
               firebase
               .database()

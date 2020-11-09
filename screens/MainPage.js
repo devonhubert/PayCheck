@@ -54,17 +54,32 @@ class MainPage extends Component {
             userEmail: gmail,
           });
         });
+        
+        //pull total amount earned from database
+        firebase
+        .database()
+        .ref('/users/' + user.uid + '/user_app_data/total_earned/')
+        .on('value', snapShot => {
+          //let data = snapShot.val() ? snapShot.val() : {};
+          let total_earned = snapShot.val();
+          console.log("Total earned is: " + total_earned);
+          
+          this.setState({
+            moneyEarned: total_earned,
+          });
+          
+        });
+        
 
     } 
   }
 
-  writeUserData = (totalEarned) => {
+  writeMoneyEarned = (totalEarned) => {
     var user = firebase.auth().currentUser;
     if(user) {
-      firebase.database().ref('users/' + user.uid + '/test').set({
-        total: totalEarned,
+      firebase.database().ref('users/' + user.uid + '/user_app_data/').update({
+        total_earned: totalEarned,
       });
-
     }
   }
   
@@ -74,7 +89,7 @@ class MainPage extends Component {
     this.setState({
       moneyEarned: newTotal,
     });
-    this.writeUserData(newTotal);
+    this.writeMoneyEarned(newTotal); //set state directly?
     console.log("Money Earned Updated");
   }
 
