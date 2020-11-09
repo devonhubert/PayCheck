@@ -24,6 +24,7 @@ class MainPage extends Component {
     userEmail: 'No Email',
   };
 
+  //Why did I put this here?
   doNothing = () => {
 
   }
@@ -56,6 +57,16 @@ class MainPage extends Component {
 
     } 
   }
+
+  writeUserData = (totalEarned) => {
+    var user = firebase.auth().currentUser;
+    if(user) {
+      firebase.database().ref('users/' + user.uid + '/test').set({
+        total: totalEarned,
+      });
+
+    }
+  }
   
   addTotalMoneyEarned = (earned) => {
     console.log("Add Total Money Earned Called with earned = " + earned);
@@ -63,6 +74,7 @@ class MainPage extends Component {
     this.setState({
       moneyEarned: newTotal,
     });
+    this.writeUserData(newTotal);
     console.log("Money Earned Updated");
   }
 
