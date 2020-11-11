@@ -55,7 +55,7 @@ class InterfaceFrame extends Component {
               <Button
                 color="#234041"
                 onPress={this.addMoney}
-                title="Log Money Earned"
+                title="Log Earnings"
               />   
             </View>
           </View>

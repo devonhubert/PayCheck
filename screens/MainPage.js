@@ -24,11 +24,6 @@ class MainPage extends Component {
     userEmail: 'No Email',
   };
 
-  //Why did I put this here?
-  doNothing = () => {
-
-  }
-
   componentDidMount() {
     console.log("Component mounted (it did)");
     var user = firebase.auth().currentUser;
@@ -258,7 +253,12 @@ class MainPage extends Component {
         
         <GoalAdder addGoal={this.addGoal.bind(this)} />
 
-        <GoalWindow goals={this.state.goals} removeGoal={this.removeGoal} setGoalMoneyEarned={this.setGoalMoneyEarned}/>
+        <GoalWindow 
+          goals={this.state.goals} 
+          removeGoal={this.removeGoal} 
+          totalMoneyEarned={this.state.moneyEarned} 
+          setGoalMoneyEarned={this.setGoalMoneyEarned}
+        />
       
         <View style={{padding:10, flexDirection:'row', alignItems:'center'}}>
           <Text style={styles.text}>{this.state.userEmail}   </Text>

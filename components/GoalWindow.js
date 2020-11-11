@@ -42,6 +42,7 @@ class GoalWindow extends Component {
                 goal={goal}
                 removeGoal={this.props.removeGoal}
                 returnMoneyEarned={this.props.setGoalMoneyEarned}
+                totalMoneyEarned={this.props.totalMoneyEarned}
               /> 
             </View>
           ))} 
