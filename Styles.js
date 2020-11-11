@@ -22,6 +22,12 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       fontSize: 15,
     },
+    goalTextHeader: {
+      color: 'black',
+      fontFamily: 'sans-serif',
+      fontWeight: 'bold',
+      fontSize: 15,
+    },
     logoImage: {
       width: 400,
       height: 100,
