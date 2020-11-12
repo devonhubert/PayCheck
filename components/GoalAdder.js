@@ -1,6 +1,5 @@
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import { View, Button, TextInput, Text} from 'react-native';
-//import Modal from 'react-native-modal';
 const styles = require('../Styles');
 
 //Interface to add Goal Windows to the app
@@ -14,25 +13,40 @@ class GoalAdder extends Component {
     }
 
     addGoal = () => {
-      this.props.addGoal(this.state.goalName, this.state.moneyNeeded);
-      this.setState({
-        goalName: '',
-        moneyNeeded: '',
-      });
-    }
-
-    
+      let keep = this.props.addGoal(this.state.goalName, this.state.moneyNeeded);
+      if(keep == "keepName") {
+        this.setState({
+          moneyNeeded: '',
+        });
+      } else if(keep = "keepNumber") {
+        this.setState({
+          goalName: '',
+        });
+      } else if(keep == "removeBoth") {
+        this.setState({
+          goalName: '',
+          moneyNeeded: '',
+        });
+      } else {
+        console.log("Something went wrong...")
+      }
+    } 
   
     render() {
-      //const [isModalVisible, setModalVisible] = useState(false);
-      /*const toggleModal = () => {
-        setModalVisible(!isModalVisible);
-      };*/
       console.log("Goal Adder Rendered with Goal Name: " + this.state.goalName);
       return(
-        <View style={{borderColor: '#234041', borderWidth: 1, width:400, backgroundColor:'white'}}>
-          {/*<Button title="Show modal" onPress={toggleModal} />*/}
-          {/*<Modal isVisible={isModalVisible}>*/}
+        <View style={{borderColor: '#234041', borderWidth: 1, backgroundColor:'white'}}>
+            <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+              <Text style={styles.goalTextHeader}> Goal Adder</Text>
+              <View style={{width:36, height:36, flexDirection:'row', justifyContent:'center'}}>
+                <Button
+                  color="#FFFFFF"
+                  onPress={() => this.props.toggleVisible()}
+                  title="✖️"
+                />
+                <Text> </Text>
+              </View>
+            </View>
             <View style={{flexDirection:'row', justifyContent:'space-evenly'}}>
               <View style={{flexDirection:'column', padding:10}}>
                 {/*Goal Name Input*/}
@@ -67,7 +81,6 @@ class GoalAdder extends Component {
                 title="Add New Goal"
               />  
             </View>
-          {/*</Modal>*/}
         </View>
       );
     }  

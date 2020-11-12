@@ -3,7 +3,7 @@ import {
   View, Alert, Image, Button
 } from 'react-native';
 import firebase from 'firebase';
-//import Modal from 'react-native-modal';
+import Modal from 'react-native-modal';
 
 import InterfaceFrame from '../components/InterfaceFrame';
 import GoalAdder from '../components/GoalAdder';
@@ -21,6 +21,7 @@ class MainPage extends Component {
     goals: [],
     keyIndex: 0,
     moneyEarned: 0,
+    isGoalAdderVisible: false,
     userName: 'No Name',
     userEmail: 'No Email',
     profilePicUrl: '../assets/newLogo.png',
@@ -215,13 +216,16 @@ class MainPage extends Component {
         [{text: "OK", onPress: () => console.log("OK Pressed")}],
         {cancelable: false}
       );
+      return "keepName";
     } else if(goalName == "") {
+      //WHAT ABOUT IF BOTH HAVE AN ERROR?
       Alert.alert(
         "Invalid Entry",
         "Your goal needs a name!",
         [{text: "OK", onPress: () => console.log("OK Pressed")}],
         {cancelable: false}
       );
+      return "keepNumber";
     } else if(Number(moneyNeeded) <= 0) {
       Alert.alert(
         "Invalid Entry",
@@ -229,9 +233,12 @@ class MainPage extends Component {
         [{text: "OK", onPress: () => console.log("OK Pressed")}],
         {cancelable: false}
       );
+      return "keepName";
     } else {
       this.writeNewGoal(goalName, moneyNeeded);
+      this.toggleGoalAdderVisible();
       console.log("Goal Added");
+      return "removeBoth";
     }
   }
 
@@ -245,7 +252,13 @@ class MainPage extends Component {
       console.log("Goal Removed");
     }
   }
-  
+
+  toggleGoalAdderVisible = () => {
+    let flippedState = !this.state.isGoalAdderVisible;
+    this.setState({
+      isGoalAdderVisible: flippedState,
+    });
+  }  
   render() {
     
     console.log("App rendered. Current goal list is: " + this.state.goals);
@@ -287,13 +300,32 @@ class MainPage extends Component {
         <View> 
           <Spacer numSpaces='1' />   
 
-          <InterfaceFrame returnMoneyEarned={this.addTotalMoneyEarned} moneyEarned={this.state.moneyEarned}/>
+          <InterfaceFrame 
+            returnMoneyEarned={this.addTotalMoneyEarned} 
+            moneyEarned={this.state.moneyEarned}
+          />
         
           <Spacer numSpaces='1' />
+
+          <View style={{flexDirection:'row', justifyContent:'center'}}>
+            <View style={{width:100, height:36}}>
+              <Button
+                color="#234041"
+                onPress={this.toggleGoalAdderVisible}
+                title="New Goal"
+              />  
+            </View>
+          </View>
           
-          
-          <GoalAdder addGoal={this.addGoal.bind(this)} />
-          
+          <Modal 
+            isVisible={this.state.isGoalAdderVisible}
+            onBackdropPress={() => this.toggleGoalAdderVisible()}
+          >
+            <GoalAdder 
+              addGoal={this.addGoal.bind(this)}
+              toggleVisible={this.toggleGoalAdderVisible.bind(this)} 
+            />
+          </Modal>
           
           <GoalWindow 
             goals={this.state.goals} 
