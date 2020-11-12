@@ -1,6 +1,6 @@
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import { 
-  View, Alert, Image, Button
+  View, Alert, Image, Button, TouchableOpacity
 } from 'react-native';
 import firebase from 'firebase';
 import Modal from 'react-native-modal';
@@ -22,6 +22,7 @@ class MainPage extends Component {
     keyIndex: 0,
     moneyEarned: 0,
     isGoalAdderVisible: false,
+    isGoogleInfoVisible: false,
     userName: 'No Name',
     userEmail: 'No Email',
     profilePicUrl: '../assets/newLogo.png',
@@ -259,6 +260,15 @@ class MainPage extends Component {
       isGoalAdderVisible: flippedState,
     });
   }  
+
+  toggleGoogleInfoVisible = () => {
+    let flippedState = !this.state.isGoogleInfoVisible;
+    this.setState({
+      isGoogleInfoVisible: flippedState,
+    });
+  }  
+
+
   render() {
     
     console.log("App rendered. Current goal list is: " + this.state.goals);
@@ -276,22 +286,32 @@ class MainPage extends Component {
             </View>
             
             <View style={{flexDirection:'row', justifyContent:'space-between', width:140}}>
-
+              
               <View style={{flexDirection:'column', justifyContent: 'center'}}>
-                <Button 
-                  color="#234041"
-                  title='Sign Out'
-                  onPress={() => firebase.auth().signOut()}
-                />
+                <Modal 
+                  isVisible={this.state.isGoogleInfoVisible}
+                  onBackdropPress={() => this.toggleGoogleInfoVisible()}
+                >
+                  <Button 
+                    color="#234041"
+                    title='Sign Out'
+                    onPress={() => firebase.auth().signOut()}
+                  />
+                </Modal>
               </View>
-        
-              <View style={{flexDirection:'column', justifyContent: 'center'}}>
-                <Image source={{
-                  uri: this.state.profilePicUrl,
-                  }} 
-                  style={styles.profileImage}
-                />
-              </View>
+              
+              <TouchableOpacity 
+                style={{flexDirection:'column', justifyContent: 'center'}}
+                onPress={this.toggleGoogleInfoVisible}
+              >
+                <View>
+                  <Image source={{
+                    uri: this.state.profilePicUrl,
+                    }} 
+                    style={styles.profileImage}
+                  />
+                </View>
+              </TouchableOpacity>
 
             </View>
           </View>

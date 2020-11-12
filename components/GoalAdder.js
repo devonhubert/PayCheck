@@ -37,7 +37,7 @@ class GoalAdder extends Component {
       return(
         <View style={{borderColor: '#234041', borderWidth: 1, backgroundColor:'white'}}>
             <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-              <Text style={styles.goalTextHeader}> Goal Adder</Text>
+              <Text style={styles.goalTextHeader}> My New Goal</Text>
               <View style={{width:36, height:36, flexDirection:'row', justifyContent:'center'}}>
                 <Button
                   color="#FFFFFF"
@@ -47,24 +47,27 @@ class GoalAdder extends Component {
                 <Text> </Text>
               </View>
             </View>
-            <View style={{flexDirection:'row', justifyContent:'space-evenly'}}>
+            <View style={{flexDirection:'column', justifyContent:'space-evenly'}}>
               <View style={{flexDirection:'column', padding:10}}>
                 {/*Goal Name Input*/}
-                <Text style={styles.text}>Name</Text>
-                <TextInput
-                  style={styles.textInput}
-                  onChangeText={(goalName) => this.setState({goalName})}
-                  value={this.state.goalName}
-                />   
+                <Text style={styles.text}>   Name</Text>
+                <View style={{flexDirection:'row', alignItems:'center'}}>
+                  <Text style={styles.text}>  </Text>
+                  <TextInput
+                    style={styles.goalTextInput}
+                    onChangeText={(goalName) => this.setState({goalName})}
+                    value={this.state.goalName}
+                  />  
+                </View> 
               </View>
 
               <View style={{flexDirection:'column', padding:10}}>
                 {/*Money Needed Input*/}
                 <Text style={styles.text}>   Money Needed</Text>
                 <View style={{flexDirection:'row', alignItems:'center'}}>
-                  <Text style={styles.text}>$ </Text>
+                  <Text style={styles.text}>$</Text>
                   <TextInput
-                    style={styles.textInput}
+                    style={styles.goalTextInput}
                     keyboardType="numeric"
                     onChangeText={(moneyNeeded) => this.setState({moneyNeeded})}
                     value={this.state.moneyNeeded}
@@ -73,13 +76,14 @@ class GoalAdder extends Component {
               </View> 
             </View>
 
-            <View>  
-
+            <Text></Text>
+            <View style={{width:200, flexDirection:'row', justifyContent:'flex-end', alignSelf:'flex-end', padding:5}}>  
               <Button
                 color="#234041"
                 onPress={this.addGoal}
-                title="Add New Goal"
+                title="Add Goal"
               />  
+              <Text> </Text>
             </View>
         </View>
       );

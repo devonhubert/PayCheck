@@ -60,6 +60,16 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       fontSize: 20,
     },
+    goalTextInput: {
+      height: 35, 
+      width: 200,
+      borderColor: '#234041', 
+      borderWidth: 1,
+      color: 'black',
+      fontFamily: 'sans-serif-light',
+      fontWeight: 'bold',
+      fontSize: 20,
+    },
     goalWindow: {
       borderWidth: 1,
       borderColor: 'black',

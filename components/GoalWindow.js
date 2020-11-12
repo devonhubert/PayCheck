@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { 
-  View, ScrollView, Text
+  View, ScrollView, Text, Image
 } from 'react-native';
 import Goal from './Goal';
+import Spacer from '../components/Spacer';
 const styles = require('../Styles');
 
 class GoalWindow extends Component {
@@ -26,7 +27,13 @@ class GoalWindow extends Component {
     if(Object.keys(this.props.goals).length <= 0) {
       return(
         <View style={{alignSelf:'center', padding:10}}>
-          <Text style={styles.text}>No Active Goals. Add One Above!</Text>
+          <Spacer numSpaces='3' /> 
+          <Text style={styles.goalTextHeader}>No Active Goals.</Text>
+          <Text style={styles.goalTextHeader}>Add One Above!</Text>
+          <Spacer numSpaces='5' /> 
+          <View style={{alignSelf:'center', padding:10}}>
+            <Image source={require('../assets/newLogo.png')} style={{height:100, width:100}} />
+          </View>
         </View>
       );
     } else {
