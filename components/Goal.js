@@ -34,7 +34,7 @@ class Goal extends Component {
     return result;
   }
   
-  onPress = () => {
+  addGoalMoney = () => {
     let moneyAmount = this.state.currSliderVal;
   
     if(this.props.earned < Number(this.props.needed)) { //Check for floats
@@ -88,6 +88,12 @@ class Goal extends Component {
     }
   }
 
+  handleRemove = () => {
+    let moneyAmount = (-1) * this.props.earned;
+    this.props.returnMoneyEarned(moneyAmount, this.props.earned, this.props.goal.key);
+    this.props.removeGoal(this.props.goal.key);
+  }
+
   render() {
     return (
       <View style={styles.goalWindow}>    
@@ -107,7 +113,7 @@ class Goal extends Component {
             <View style={{width:36, height:36}}>
               <Button
                 color="#FFFFFF"
-                onPress={() => this.props.removeGoal(this.props.goal.key)}
+                onPress={() => this.handleRemove()}
                 title="✖️"
               /> 
             </View>
@@ -149,7 +155,7 @@ class Goal extends Component {
           <View style={{width:100}}>
             <Button
               color="#234041"
-              onPress={this.onPress}
+              onPress={this.addGoalMoney}
               title={"" + this.getButtonText()}
             />  
           </View>

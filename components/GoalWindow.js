@@ -19,7 +19,6 @@ class GoalWindow extends Component {
       let arr = [dictionary[key]];
       myArray = arr.concat(myArray);
     }
-
     return myArray;
   }
 
