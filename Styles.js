@@ -29,8 +29,13 @@ const styles = StyleSheet.create({
       fontSize: 15,
     },
     logoImage: {
-      width: 400,
-      height: 100,
+      width: 60,
+      height: 60,
+    },
+    profileImage: {
+      width: 50,
+      height: 50,
+      borderRadius: 50/ 2,
     },
     container: {
       width: 500,

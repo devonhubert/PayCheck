@@ -114,19 +114,25 @@ class Goal extends Component {
         
         <View style={{flexDirection:'row', justifyContent:'space-between'}}>
           <View style={{flexDirection:'row'}}>
-            <Text style={styles.goalText}>   {this.findMinimumValue()}</Text>
-            <Slider
-              style={{width: 200, height: 40}}
-              minimumValue={this.findMinimumValue()}
-              value={0}
-              maximumValue={this.findMaximumValue()}
-              thumbTintColor={"#234041"}
-              step={1}
-              minimumTrackTintColor="#234041"
-              maximumTrackTintColor="grey"
-              onValueChange={val => this.setState({ currSliderVal: val })}
-            />
-            <Text style={styles.goalText}>{this.findMaximumValue()}</Text>
+            <View style={{flexDirection:'column', justifyContent:'center'}}>
+              <Text style={styles.goalText}>   -</Text>
+            </View>
+            <View style={{flexDirection:'column', justifyContent:'center'}}>
+              <Slider
+                style={{width: 200, height: 40}}
+                minimumValue={this.findMinimumValue()}
+                value={0}
+                maximumValue={this.findMaximumValue()}
+                thumbTintColor={"#234041"}
+                step={1}
+                minimumTrackTintColor="#234041"
+                maximumTrackTintColor="grey"
+                onValueChange={val => this.setState({ currSliderVal: val })}
+              />
+            </View>
+            <View style={{flexDirection:'column', justifyContent:'center'}}>
+              <Text style={styles.goalText}>+</Text>
+            </View>
           </View>
           
           <View style={{width:100}}>

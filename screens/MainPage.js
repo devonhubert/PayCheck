@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { 
-  View, Alert, Image, Button, Text
+  View, Alert, Image, Button
 } from 'react-native';
 import firebase from 'firebase';
+//import Modal from 'react-native-modal';
 
 import InterfaceFrame from '../components/InterfaceFrame';
 import GoalAdder from '../components/GoalAdder';
@@ -22,6 +23,7 @@ class MainPage extends Component {
     moneyEarned: 0,
     userName: 'No Name',
     userEmail: 'No Email',
+    profilePicUrl: '../assets/newLogo.png',
   };
 
   componentDidMount() {
@@ -48,6 +50,18 @@ class MainPage extends Component {
           let gmail = data;
           this.setState({
             userEmail: gmail,
+          });
+        });
+
+        firebase
+        .database()
+        .ref('/users/' + user.uid + '/profile_picture')
+        .on('value', querySnapShot => {
+          let data = querySnapShot.val() ? querySnapShot.val() : {};
+          let profile_picture = data;
+          console.log("Profile picture url: " + profile_picture);
+          this.setState({
+            profilePicUrl: profile_picture,
           });
         });
         
@@ -238,37 +252,57 @@ class MainPage extends Component {
     console.log("Current money earned is: " + this.state.moneyEarned);
 
     return (
-      <View style={styles.container}>        
-        <Spacer numSpaces='3' />
+      <View style={styles.container}>
+        <Spacer numSpaces='5' />
+        <View>      
+          <Spacer numSpaces='3' />
+          
+          <View style={{flexDirection:'row', justifyContent:'space-between', width:370}}>
+            <View>
+              <Image source={require('../assets/newLogo.png')} style={styles.logoImage} />
+            </View>
+            
+            <View style={{flexDirection:'row', justifyContent:'space-between', width:140}}>
 
-        <Image source={require('../assets/logo.png')} style={styles.logoImage} />
+              <View style={{flexDirection:'column', justifyContent: 'center'}}>
+                <Button 
+                  color="#234041"
+                  title='Sign Out'
+                  onPress={() => firebase.auth().signOut()}
+                />
+              </View>
+        
+              <View style={{flexDirection:'column', justifyContent: 'center'}}>
+                <Image source={{
+                  uri: this.state.profilePicUrl,
+                  }} 
+                  style={styles.profileImage}
+                />
+              </View>
 
-        <View style={{padding:10}}>
-          <Text style={styles.text}>Hello, {this.state.userName}!</Text>
+            </View>
+          </View>
         </View>
-        
-        <InterfaceFrame returnMoneyEarned={this.addTotalMoneyEarned} moneyEarned={this.state.moneyEarned}/>
-      
-        <Spacer numSpaces='1' />
-        
-        <GoalAdder addGoal={this.addGoal.bind(this)} />
 
-        <GoalWindow 
-          goals={this.state.goals} 
-          removeGoal={this.removeGoal} 
-          totalMoneyEarned={this.state.moneyEarned} 
-          setGoalMoneyEarned={this.setGoalMoneyEarned}
-        />
-      
-        <View style={{padding:10, flexDirection:'row', alignItems:'center'}}>
-          <Text style={styles.text}>{this.state.userEmail}   </Text>
-          <Button 
-            color="#234041"
-            title='Sign Out'
-            onPress={() => firebase.auth().signOut()}
+        <View> 
+          <Spacer numSpaces='1' />   
+
+          <InterfaceFrame returnMoneyEarned={this.addTotalMoneyEarned} moneyEarned={this.state.moneyEarned}/>
+        
+          <Spacer numSpaces='1' />
+          
+          
+          <GoalAdder addGoal={this.addGoal.bind(this)} />
+          
+          
+          <GoalWindow 
+            goals={this.state.goals} 
+            removeGoal={this.removeGoal} 
+            totalMoneyEarned={this.state.moneyEarned} 
+            setGoalMoneyEarned={this.setGoalMoneyEarned}
           />
+          <Spacer numSpaces='7' />
         </View>
-        
         
       </View>
     );
