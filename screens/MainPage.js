@@ -253,7 +253,7 @@ class MainPage extends Component {
 
     return (
       <View style={styles.container}>
-        <Spacer numSpaces='5' />
+        <Spacer numSpaces='7' />
         <View>      
           <Spacer numSpaces='3' />
           

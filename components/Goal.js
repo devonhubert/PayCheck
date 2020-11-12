@@ -95,12 +95,23 @@ class Goal extends Component {
         <View style={{flexDirection:'row', justifyContent:'space-between'}}>
           <Text style={styles.goalTextHeader}>  {this.props.name}</Text>
 
-          <View style={{width:36, height:36}}>
-            <Button
-              color="#FFFFFF"
-              onPress={() => this.props.removeGoal(this.props.goal.key)}
-              title="✖️"
-            /> 
+          <View style={{flexDirection:'row', justifyContent:'center'}}>
+            <View style={{width:36, height:36}}>
+              <Button
+                color="#FFFFFF"
+                
+                title="✏️"
+              /> 
+            </View>
+            <Text>  </Text>
+            <View style={{width:36, height:36}}>
+              <Button
+                color="#FFFFFF"
+                onPress={() => this.props.removeGoal(this.props.goal.key)}
+                title="✖️"
+              /> 
+            </View>
+            
           </View>  
         </View>
         
