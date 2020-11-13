@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { 
-  View, Alert, Image, Button, TouchableOpacity
+  View, Alert, Image, Button, TouchableOpacity, Text
 } from 'react-native';
 import firebase from 'firebase';
 import Modal from 'react-native-modal';
@@ -23,6 +23,7 @@ class MainPage extends Component {
     moneyEarned: 0,
     isGoalAdderVisible: false,
     isGoogleInfoVisible: false,
+    isMoneyLoggerVisible: false,
     userName: 'No Name',
     userEmail: 'No Email',
     profilePicUrl: '../assets/newLogo.png',
@@ -268,6 +269,13 @@ class MainPage extends Component {
     });
   }  
 
+  toggleMoneyLoggerVisible = () => {
+    let flippedState = !this.state.isMoneyLoggerVisible;
+    this.setState({
+      isMoneyLoggerVisible: flippedState,
+    });
+  }  
+
 
   render() {
     
@@ -284,8 +292,14 @@ class MainPage extends Component {
             <View>
               <Image source={require('../assets/newLogo.png')} style={styles.logoImage} />
             </View>
+
+            <View style={{width:200, flexDirection:'column', justifyContent:'center'}}>
+              <View style={{alignSelf:'center', padding:5}}>
+                <Text style={styles.goalTextHeader}>Total Earned: ${this.state.moneyEarned}</Text>
+              </View>
+            </View>
             
-            <View style={{flexDirection:'row', justifyContent:'space-between', width:140}}>
+            <View style={{flexDirection:'row', justifyContent:'space-between'}}>
               
               <View style={{flexDirection:'column', justifyContent: 'center'}}>
                 <Modal 
@@ -317,25 +331,43 @@ class MainPage extends Component {
           </View>
         </View>
 
+        
+
         <View> 
           <Spacer numSpaces='1' />   
+          <View style={{flexDirection:'row', justifyContent:'space-evenly'}}>
+            <View style={{flexDirection:'row'}}>
+              <View style={{width:120, height:36}}>
+                <Button
+                  color="#234041"
+                  onPress={this.toggleMoneyLoggerVisible}
+                  title="Log Earnings"
+                />  
+              </View>
+            </View>
 
-          <InterfaceFrame 
-            returnMoneyEarned={this.addTotalMoneyEarned} 
-            moneyEarned={this.state.moneyEarned}
-          />
-        
-          <Spacer numSpaces='1' />
-
-          <View style={{flexDirection:'row', justifyContent:'center'}}>
-            <View style={{width:100, height:36}}>
-              <Button
-                color="#234041"
-                onPress={this.toggleGoalAdderVisible}
-                title="New Goal"
-              />  
+            <View style={{flexDirection:'row', justifyContent:'center'}}>
+              <View style={{width:120, height:36}}>
+                <Button
+                  color="#234041"
+                  onPress={this.toggleGoalAdderVisible}
+                  title="New Goal"
+                />  
+              </View>
             </View>
           </View>
+
+          
+
+          <Modal 
+            isVisible={this.state.isMoneyLoggerVisible}
+            onBackdropPress={() => this.toggleMoneyLoggerVisible()}
+          >
+            <InterfaceFrame 
+              returnMoneyEarned={this.addTotalMoneyEarned.bind(this)} 
+              toggleVisible={this.toggleMoneyLoggerVisible.bind(this)}
+            />
+          </Modal>
           
           <Modal 
             isVisible={this.state.isGoalAdderVisible}

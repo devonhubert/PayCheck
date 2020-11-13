@@ -27,40 +27,46 @@ class InterfaceFrame extends Component {
           text: '',
         });
         this.props.returnMoneyEarned(toAdd);
+        this.props.toggleVisible();
       }
     }
   
     render() {
-      console.log("InterfaceFrame Rendered. Money Earned is " + this.props.moneyEarned);
+      console.log("InterfaceFrame Rendered.");
       return (
-        <View style={{borderColor: '#234041', borderWidth: 1, width: 400, backgroundColor:'white'}}>
-          <View style={{alignSelf:'center', padding:10}}>
-            {/*Total Earned Display*/}
-            <Text style={styles.text}>Total Earned: ${this.props.moneyEarned}</Text>
+        <View style={{borderColor: '#234041', borderWidth: 1, backgroundColor:'white'}}>
+          <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+            <Text style={styles.goalTextHeader}> Log Earnings</Text>
+            <View style={{width:36, height:36, flexDirection:'row', justifyContent:'center'}}>
+              <Button
+                color="#FFFFFF"
+                onPress={() => this.props.toggleVisible()}
+                title="✖️"
+              />
+              <Text> </Text>
+            </View>
           </View>
-
-          <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center'}}>
-            <Text style={styles.text}>$ </Text>
-            <View>
+          <Spacer numSpaces='1' />
+          <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center', alignSelf:'flex-start'}}>
+            <Text style={styles.text}>  $</Text>
+            <View style={{alignSelf:'flex-start'}}>
               {/*Money Adding Input*/}
               <TextInput
-                style={styles.textInput}
+                style={styles.goalTextInput}
                 keyboardType="numeric"
                 onChangeText={(text) => this.setState({text})}
                 value={this.state.text}
               />    
             </View>
-            <View>
-              {/*Submit Button*/}
+          </View>
+            <View style={{width:200, flexDirection:'row', justifyContent:'flex-end', alignSelf:'flex-end', padding:5}}>  
               <Button
                 color="#234041"
                 onPress={this.addMoney}
-                title="Log Earnings"
-              />   
+                title="Log"
+              />  
+              <Text> </Text>
             </View>
-          </View>
-
-          <Spacer numSpaces='1' />
         </View>
       );
     }

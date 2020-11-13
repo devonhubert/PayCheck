@@ -61,7 +61,7 @@ class GoalWindow extends Component {
 
   render() {
     return(
-      <ScrollView style={styles.scrollView}>   
+      <ScrollView style={styles.scrollView}> 
         {this.displayGoals()}
       </ScrollView>
     );
