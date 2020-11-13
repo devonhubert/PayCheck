@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, Button, Alert } from 'react-native';
 import Spacer from './Spacer';
 import Slider from '@react-native-community/slider';
+import * as Progress from 'react-native-progress';
 const styles = require('../Styles');
 
 
@@ -19,20 +20,7 @@ class Goal extends Component {
     return Math.floor((this.props.earned/this.props.needed) * 100);
   }
   
-  showBar() {
-    let percent = this.calculatePercent();
-    let result = '';
-    let divisionNumber = 10;
-    
-    for(let i = 0; i < divisionNumber; i++) {
-      if(i < Math.floor(percent/divisionNumber)) {
-        result += '#';
-      } else {
-        result += ' ';
-      }
-    } 
-    return result;
-  }
+  
   
   addGoalMoney = () => {
     let moneyAmount = this.state.currSliderVal;
@@ -55,9 +43,7 @@ class Goal extends Component {
         {cancelable: false}
       );
       this.props.removeGoal(this.props.goal.key);
-    } else {
-      return "$" + this.props.needed + " needed, $" + this.props.earned + " earned";
-    }
+    } 
   }
 
   findMinimumValue = () => {
@@ -94,7 +80,21 @@ class Goal extends Component {
     this.props.removeGoal(this.props.goal.key);
   }
 
+  getProgressColor = () => {
+    let percent = this.calculatePercent();
+    if(percent <= 25) {
+      return '#ff0000';
+    } else if(percent <= 50) {
+      return '#ff6600';
+    } else if(percent <= 75) {
+      return '#ffff00';
+    } else if(percent <= 100) {
+      return '#57b27a';
+    } 
+  }
+
   render() {
+    this.checkCompleted();
     return (
       <View style={styles.goalWindow}>    
         {/*Remove Goal Button*/}
@@ -120,19 +120,29 @@ class Goal extends Component {
             
           </View>  
         </View>
+
+        <View>
+          <Text style={styles.goalText}>  ${this.props.earned} Earned</Text>
+        </View>
         
-        <View style={{padding:5}}>
-          
-          <Text style={styles.goalText}>  {this.checkCompleted()}</Text>
-          <Spacer numSpaces='1' />
-          <Text style={styles.goalText}>  ({this.calculatePercent()}%)</Text>
-          <Text style={styles.goalText}>  {this.showBar()}</Text>
+        <View>
+          <View style={{flexDirection:'row', justifyContent:'center', alignSelf:'flex-start'}}>
+            <Text>  </Text>
+            <View style={{flexDirection:'column', justifyContent:'center'}}>
+              <Progress.Bar 
+                progress={this.calculatePercent()/100} width={172} 
+                color={this.getProgressColor()}
+                borderColor='black'
+              />
+            </View>
+            <Text>  ${this.props.needed}</Text>
+          </View>
         </View>
         
         <View style={{flexDirection:'row', justifyContent:'space-between'}}>
           <View style={{flexDirection:'row'}}>
             <View style={{flexDirection:'column', justifyContent:'center'}}>
-              <Text style={styles.goalText}>   -</Text>
+              <Text style={styles.goalText}>  -</Text>
             </View>
             <View style={{flexDirection:'column', justifyContent:'center'}}>
               <Slider
