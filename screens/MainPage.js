@@ -25,6 +25,7 @@ class MainPage extends Component {
     isGoalAdderVisible: false,
     isGoalEditorVisible: false,
     goalToEdit: -1,
+    isWalletVisible: false,
     isGoogleInfoVisible: false,
     isMoneyLoggerVisible: false,
     firstName: '',
@@ -173,6 +174,12 @@ class MainPage extends Component {
           needed: moneyNeeded,
         });
         this.pullGoals(user);
+        Alert.alert(
+          "Goal Updated",
+          "Your goal was successfully updated!",
+          [{text: "OK", onPress: () => console.log("OK Pressed")}],
+          {cancelable: false}
+        );
       }
     }
   }
@@ -316,6 +323,12 @@ class MainPage extends Component {
       
       this.pullGoals(user);
       console.log("Goal Removed");
+      Alert.alert(
+        "Goal successfully removed!",
+        "Your goal has been removed, and your money been returned to your wallet.",
+        [{text: "OK", onPress: () => console.log("OK Pressed")}],
+        {cancelable: false}
+      );
     }
   }
 
@@ -355,6 +368,13 @@ class MainPage extends Component {
     });
   }  
 
+  toggleWalletVisible = () => {
+    let flippedState = !this.state.isWalletVisible;
+    this.setState({
+      isWalletVisible: flippedState,
+    });
+  }
+
   render() {
     
     console.log("App rendered. Current goal list is: " + this.state.goals);
@@ -371,50 +391,18 @@ class MainPage extends Component {
               <Image source={require('../assets/newLogo.png')} style={styles.logoImage} />
             </View>
 
-            <View style={{width:200, flexDirection:'column', justifyContent:'center'}}>
-              <View style={{alignSelf:'center', padding:5}}>
-                <Text style={styles.goalTextHeader}>Total Earned: ${this.state.moneyEarned}</Text>
+            <TouchableOpacity 
+                style={{flexDirection:'column', justifyContent: 'center'}}
+                onPress={this.toggleWalletVisible}
+              >
+              <View>
+                <Image source={require('../assets/wallet_icon.png')} 
+                  style={styles.logoImage}
+                />
               </View>
-            </View>
+            </TouchableOpacity>
             
             <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-              
-              <View style={{flexDirection:'column', justifyContent: 'center'}}>
-                <Modal 
-                  isVisible={this.state.isGoogleInfoVisible}
-                  onBackdropPress={() => this.toggleGoogleInfoVisible()}
-                >
-                  <View style={{borderColor: '#234041', borderWidth: 1, backgroundColor:'white'}} >
-                    <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                      <Text style={styles.goalTextHeader}> My Google Account</Text>
-                      <View style={{width:36, height:36, flexDirection:'row', justifyContent:'center'}}>
-                        <Button
-                          color="#FFFFFF"
-                          onPress={() => this.toggleGoogleInfoVisible()}
-                          title="✖️"
-                        />
-                
-                      </View>
-                    </View>
-                    
-                    <Spacer numSpaces='1' />
-                    <View style={{alignSelf:'center'}}>
-                      <Text style={styles.goalText}>Email: {this.state.userEmail}</Text>
-                    </View>
-                    <Spacer numSpaces='1' />
-                    <View style={{alignSelf:'center'}}>
-                      <Text style={styles.goalText}>Name: {this.state.firstName} {this.state.lastName}</Text>
-                    </View>
-                    <Spacer numSpaces='2' />
-                  
-                    <Button 
-                      color="#234041"
-                      title='Sign Out'
-                      onPress={() => firebase.auth().signOut()}
-                    />
-                  </View>
-                </Modal>
-              </View>
               
               <TouchableOpacity 
                 style={{flexDirection:'column', justifyContent: 'center'}}
@@ -422,7 +410,7 @@ class MainPage extends Component {
               >
                 <View>
                   <Image source={{
-                    uri: this.state.profilePicUrl,
+                      uri: this.state.profilePicUrl,
                     }} 
                     style={styles.profileImage}
                   />
@@ -437,28 +425,8 @@ class MainPage extends Component {
 
         <View> 
           <Spacer numSpaces='1' />   
-          <View style={{flexDirection:'row', justifyContent:'space-evenly'}}>
-            <View style={{flexDirection:'row'}}>
-              <View style={{width:120, height:36}}>
-                <Button
-                  color="#234041"
-                  onPress={this.toggleMoneyLoggerVisible}
-                  title="Log Earnings"
-                />  
-              </View>
-            </View>
-
-            <View style={{flexDirection:'row', justifyContent:'center'}}>
-              <View style={{width:120, height:36}}>
-                <Button
-                  color="#234041"
-                  onPress={this.toggleGoalAdderVisible}
-                  title="New Goal"
-                />  
-              </View>
-            </View>
-          </View>
-
+          
+            
           
 
           <Modal 
@@ -492,14 +460,90 @@ class MainPage extends Component {
             />
           </Modal>
 
-          
-          
+          <Modal 
+            isVisible={this.state.isWalletVisible}
+            onBackdropPress={() => this.toggleWalletVisible()}
+          >
+            <View style={{borderColor: '#234041', borderWidth: 1, backgroundColor:'white'}} >
+              <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+                <Text style={styles.goalTextHeader}> My Wallet</Text>
+                <View style={{width:36, height:36, flexDirection:'row', justifyContent:'center'}}>
+                  <Button
+                    color="#FFFFFF"
+                    onPress={() => this.toggleWalletVisible()}
+                    title="✖️"
+                  />
+                </View>
+              </View>
+
+              <View style={{alignSelf:'center'}}>
+                <View style={{width:200, flexDirection:'row', justifyContent:'center'}}>
+                  <View style={{padding:5}}>
+                    <Text style={styles.goalText}>Total Earned: ${this.state.moneyEarned}</Text>
+                  </View>
+                </View>
+              </View>
+                    
+              <Spacer numSpaces='1' />
+                  
+              <View style={{flexDirection:'row', justifyContent:'center', padding:5}}>
+                <View style={{width:120, height:36}}>
+                  <Button
+                    color="#234041"
+                    onPress={this.toggleMoneyLoggerVisible}
+                    title="Log Earnings"
+                  />  
+                </View>
+              </View>
+            </View>
+          </Modal>
+
+          <Modal 
+            isVisible={this.state.isGoogleInfoVisible}
+            onBackdropPress={() => this.toggleGoogleInfoVisible()}
+          >
+            <View style={{borderColor: '#234041', borderWidth: 1, backgroundColor:'white'}} >
+              <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+                <Text style={styles.goalTextHeader}> My Google Account</Text>
+                  <View style={{width:36, height:36, flexDirection:'row', justifyContent:'center'}}>
+                    <Button
+                      color="#FFFFFF"
+                      onPress={() => this.toggleGoogleInfoVisible()}
+                      title="✖️"
+                    />
+                
+                </View>
+              </View>
+                    
+              <Spacer numSpaces='1' />
+
+              <View style={{alignSelf:'center'}}>
+                <Text style={styles.goalText}>Email: {this.state.userEmail}</Text>
+              </View>
+                    
+              <Spacer numSpaces='1' />
+                    
+              <View style={{alignSelf:'center'}}>
+                <Text style={styles.goalText}>Name: {this.state.firstName} {this.state.lastName}</Text>
+              </View>
+              
+              <Spacer numSpaces='2' />
+
+              <Button 
+                color="#234041"
+                title='Sign Out'
+                onPress={() => firebase.auth().signOut()}
+              />
+            </View>
+          </Modal>
+
           <GoalWindow 
             goals={this.state.goals} 
             removeGoal={this.removeGoal} 
             editGoal={this.editGoal}
             totalMoneyEarned={this.state.moneyEarned} 
             setGoalMoneyEarned={this.setGoalMoneyEarned}
+            toggleGoalAdderVisible={this.toggleGoalAdderVisible}
           />
           <Spacer numSpaces='7' />
         </View>

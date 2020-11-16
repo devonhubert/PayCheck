@@ -72,6 +72,23 @@ class Goal extends Component {
   }
 
   handleRemove = () => {
+    Alert.alert(
+      'Please Confirm',
+      'Are you sure you want to delete this goal?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel'
+        },
+        { text: 'Yes', onPress: () => this.reallyRemove()}
+      ],
+      { cancelable: false }
+    );
+    
+  }
+
+  reallyRemove = () => {
     let moneyAmount = (-1) * this.props.earned;
     this.props.returnMoneyEarned(moneyAmount, this.props.earned, this.props.goal.key);
     this.props.removeGoal(this.props.goal.key);

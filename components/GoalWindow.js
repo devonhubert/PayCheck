@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { 
-  View, ScrollView, Text, Image
+  View, ScrollView, Text, Image, Button
 } from 'react-native';
 import Goal from './Goal';
 import Spacer from '../components/Spacer';
@@ -27,10 +27,16 @@ class GoalWindow extends Component {
       return(
         <View style={{alignSelf:'center', padding:10}}>
           <Spacer numSpaces='3' /> 
+          {/*
           <Text style={styles.goalTextHeader}>No Active Goals</Text>
+          */}
           <Spacer numSpaces='5' /> 
           <View style={{alignSelf:'center', padding:10}}>
-            <Image source={require('../assets/newLogo.png')} style={{height:100, width:100}} />
+            
+            <View style={{flexDirection:'row', justifyContent:'center'}}>
+              <Text>      </Text>
+              <Image source={require('../assets/target_icon.png')} style={{height:100, width:100}} />
+            </View>
           </View>
         </View>
       );
@@ -64,6 +70,15 @@ class GoalWindow extends Component {
       <ScrollView 
         style={styles.scrollView}
       > 
+        <View style={{flexDirection:'row', justifyContent:'center', padding:5}}>
+          <View style={{width:120, height:36}}>
+            <Button
+              color="#234041"
+              onPress={this.props.toggleGoalAdderVisible}
+              title="New Goal"
+            />  
+          </View>
+        </View>
         {this.displayGoals()}
       </ScrollView>
     );
