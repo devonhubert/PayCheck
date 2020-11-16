@@ -162,11 +162,15 @@ class MainPage extends Component {
         });
         this.pullKeyIndex(user);
       } else { 
+
         //Updating Existing Goal
+        this.setState({
+          goalToEdit: -1,
+        });
+
         firebase.database().ref('users/' + user.uid + '/user_app_data/goals/' + key).update({
           name: goalName,
           needed: moneyNeeded,
-          key: this.state.keyIndex,
         });
         this.pullGoals(user);
       }
@@ -318,7 +322,7 @@ class MainPage extends Component {
   editGoal = (key) => {
     console.log("Main page editGoal called from key " + key);
     this.setState({
-      goalToEdit: key,
+      goalToEdit: Number(key),
     });
     this.toggleGoalEditorVisible();
   }
