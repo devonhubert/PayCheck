@@ -36,7 +36,7 @@ class InterfaceFrame extends Component {
       return (
         <View style={{borderColor: '#234041', borderWidth: 1, backgroundColor:'white'}}>
           <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-            <Text style={styles.goalTextHeader}> Log Earnings</Text>
+            <Text style={styles.goalTextHeader}> Log My Earnings</Text>
             <View style={{width:36, height:36, flexDirection:'row', justifyContent:'center'}}>
               <Button
                 color="#FFFFFF"
@@ -56,6 +56,7 @@ class InterfaceFrame extends Component {
                 keyboardType="numeric"
                 onChangeText={(text) => this.setState({text})}
                 value={this.state.text}
+                maxLength={10}
               />    
             </View>
           </View>
@@ -63,7 +64,7 @@ class InterfaceFrame extends Component {
               <Button
                 color="#234041"
                 onPress={this.addMoney}
-                title="Log"
+                title="Add to Wallet"
               />  
               <Text> </Text>
             </View>

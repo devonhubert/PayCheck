@@ -24,8 +24,9 @@ class MainPage extends Component {
     isGoalAdderVisible: false,
     isGoogleInfoVisible: false,
     isMoneyLoggerVisible: false,
-    userName: 'No Name',
-    userEmail: 'No Email',
+    firstName: '',
+    lastName: '',
+    userEmail: '',
     profilePicUrl: '../assets/newLogo.png',
   };
 
@@ -34,14 +35,25 @@ class MainPage extends Component {
     var user = firebase.auth().currentUser;
 
     if (user) {
-      firebase
+        firebase
         .database()
         .ref('/users/' + user.uid + '/first_name')
         .on('value', querySnapShot => {
           let data = querySnapShot.val() ? querySnapShot.val() : {};
           let name = data;
           this.setState({
-            userName: name,
+            firstName: name,
+          });
+        });
+
+        firebase
+        .database()
+        .ref('/users/' + user.uid + '/last_name')
+        .on('value', querySnapShot => {
+          let data = querySnapShot.val() ? querySnapShot.val() : {};
+          let name = data;
+          this.setState({
+            lastName: name,
           });
         });
 
@@ -126,11 +138,18 @@ class MainPage extends Component {
     } 
   }
 
-  writeNewGoal = (goalName, moneyNeeded) => {
+  writeGoal = (goalName, moneyNeeded, key) => {
     var user = firebase.auth().currentUser;
 
     if (user) {
-      firebase.database().ref('users/' + user.uid + '/user_app_data/goals/' + this.state.keyIndex).update({
+
+      //If New Goal...
+      if(key == -1) {
+        //overwrite with new index
+        key = this.state.keyIndex;
+      }
+
+      firebase.database().ref('users/' + user.uid + '/user_app_data/goals/' + key).update({
         name: goalName,
         needed: moneyNeeded,
         earned: 0.0,
@@ -237,12 +256,47 @@ class MainPage extends Component {
       );
       return "keepName";
     } else {
-      this.writeNewGoal(goalName, moneyNeeded);
+      this.writeGoal(goalName, moneyNeeded, -1);
       this.toggleGoalAdderVisible();
       console.log("Goal Added");
       return "removeBoth";
     }
   }
+
+  /*
+  updateGoal = (goalName, moneyNeeded) => {
+    if(isNaN(Number(moneyNeeded))) {
+      Alert.alert(
+        "Not a Number",
+        "Please enter a valid number, you silly! 😛",
+        [{text: "OK", onPress: () => console.log("OK Pressed")}],
+        {cancelable: false}
+      );
+      return "keepName";
+    } else if(goalName == "") {
+      Alert.alert(
+        "Invalid Entry",
+        "Your goal needs a name!",
+        [{text: "OK", onPress: () => console.log("OK Pressed")}],
+        {cancelable: false}
+      );
+      return "keepNumber";
+    } else if(Number(moneyNeeded) <= 0) {
+      Alert.alert(
+        "Invalid Entry",
+        "Any goal worth saving for will require an amount of money greater than 0!",
+        [{text: "OK", onPress: () => console.log("OK Pressed")}],
+        {cancelable: false}
+      );
+      return "keepName";
+    } else {
+      this.writeGoal(goalName, moneyNeeded, 0);
+      this.toggleGoalUpdaterVisible();
+      console.log("Goal Added");
+      return "removeBoth";
+    }
+  }
+  */
 
   removeGoal = (key) => {
     var user = firebase.auth().currentUser;
@@ -276,7 +330,6 @@ class MainPage extends Component {
     });
   }  
 
-
   render() {
     
     console.log("App rendered. Current goal list is: " + this.state.goals);
@@ -306,11 +359,35 @@ class MainPage extends Component {
                   isVisible={this.state.isGoogleInfoVisible}
                   onBackdropPress={() => this.toggleGoogleInfoVisible()}
                 >
-                  <Button 
-                    color="#234041"
-                    title='Sign Out'
-                    onPress={() => firebase.auth().signOut()}
-                  />
+                  <View style={{borderColor: '#234041', borderWidth: 1, backgroundColor:'white'}} >
+                    <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+                      <Text style={styles.goalTextHeader}> My Google Account</Text>
+                      <View style={{width:36, height:36, flexDirection:'row', justifyContent:'center'}}>
+                        <Button
+                          color="#FFFFFF"
+                          onPress={() => this.toggleGoogleInfoVisible()}
+                          title="✖️"
+                        />
+                
+                      </View>
+                    </View>
+                    
+                    <Spacer numSpaces='1' />
+                    <View style={{alignSelf:'center'}}>
+                      <Text style={styles.goalText}>Email: {this.state.userEmail}</Text>
+                    </View>
+                    <Spacer numSpaces='1' />
+                    <View style={{alignSelf:'center'}}>
+                      <Text style={styles.goalText}>Name: {this.state.firstName} {this.state.lastName}</Text>
+                    </View>
+                    <Spacer numSpaces='2' />
+                  
+                    <Button 
+                      color="#234041"
+                      title='Sign Out'
+                      onPress={() => firebase.auth().signOut()}
+                    />
+                  </View>
                 </Modal>
               </View>
               
@@ -378,6 +455,8 @@ class MainPage extends Component {
               toggleVisible={this.toggleGoalAdderVisible.bind(this)} 
             />
           </Modal>
+
+          
           
           <GoalWindow 
             goals={this.state.goals} 

@@ -3,7 +3,7 @@ import { View, Button, TextInput, Text} from 'react-native';
 const styles = require('../Styles');
 
 //Interface to add Goal Windows to the app
-class GoalAdder extends Component {
+class GoalUpdater extends Component {
     constructor(props) {
       super(props);
       this.state = {
@@ -12,8 +12,8 @@ class GoalAdder extends Component {
       };  
     }
 
-    addGoal = () => {
-      let keep = this.props.addGoal(this.state.goalName, this.state.moneyNeeded);
+    updateGoalHandler = () => {
+      let keep = this.props.updateGoal(this.state.goalName, this.state.moneyNeeded);
       if(keep == "keepName") {
         this.setState({
           moneyNeeded: '',
@@ -37,7 +37,7 @@ class GoalAdder extends Component {
       return(
         <View style={{borderColor: '#234041', borderWidth: 1, backgroundColor:'white'}}>
             <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-              <Text style={styles.goalTextHeader}> My New Goal</Text>
+              <Text style={styles.goalTextHeader}> Update Goal</Text>
               <View style={{width:36, height:36, flexDirection:'row', justifyContent:'center'}}>
                 <Button
                   color="#FFFFFF"
@@ -82,8 +82,8 @@ class GoalAdder extends Component {
             <View style={{width:200, flexDirection:'row', justifyContent:'flex-end', alignSelf:'flex-end', padding:5}}>  
               <Button
                 color="#234041"
-                onPress={this.addGoal}
-                title="Add Goal"
+                onPress={this.updateGoalHandler}
+                title="Update"
               />  
               <Text> </Text>
             </View>
@@ -92,4 +92,4 @@ class GoalAdder extends Component {
     }  
 }
 
-export default GoalAdder;
+export default GoalUpdater;

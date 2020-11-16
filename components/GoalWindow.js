@@ -27,8 +27,7 @@ class GoalWindow extends Component {
       return(
         <View style={{alignSelf:'center', padding:10}}>
           <Spacer numSpaces='3' /> 
-          <Text style={styles.goalTextHeader}>No Active Goals.</Text>
-          <Text style={styles.goalTextHeader}>Add One Above!</Text>
+          <Text style={styles.goalTextHeader}>No Active Goals</Text>
           <Spacer numSpaces='5' /> 
           <View style={{alignSelf:'center', padding:10}}>
             <Image source={require('../assets/newLogo.png')} style={{height:100, width:100}} />
@@ -47,6 +46,7 @@ class GoalWindow extends Component {
                 earned={goal.earned} 
                 goal={goal}
                 removeGoal={this.props.removeGoal}
+                
                 returnMoneyEarned={this.props.setGoalMoneyEarned}
                 totalMoneyEarned={this.props.totalMoneyEarned}
               /> 
@@ -61,7 +61,9 @@ class GoalWindow extends Component {
 
   render() {
     return(
-      <ScrollView style={styles.scrollView}> 
+      <ScrollView 
+        style={styles.scrollView}
+      > 
         {this.displayGoals()}
       </ScrollView>
     );

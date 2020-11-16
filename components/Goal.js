@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { View, Text, Button, Alert } from 'react-native';
-import Spacer from './Spacer';
 import Slider from '@react-native-community/slider';
 import * as Progress from 'react-native-progress';
 const styles = require('../Styles');
@@ -19,8 +18,6 @@ class Goal extends Component {
   calculatePercent() {
     return Math.floor((this.props.earned/this.props.needed) * 100);
   }
-  
-  
   
   addGoalMoney = () => {
     let moneyAmount = this.state.currSliderVal;
@@ -105,7 +102,6 @@ class Goal extends Component {
             <View style={{width:36, height:36}}>
               <Button
                 color="#FFFFFF"
-                
                 title="✏️"
               /> 
             </View>
@@ -117,7 +113,6 @@ class Goal extends Component {
                 title="✖️"
               /> 
             </View>
-            
           </View>  
         </View>
 
@@ -170,7 +165,6 @@ class Goal extends Component {
             />  
           </View>
         </View>
-          
       </View>
     );
   }
