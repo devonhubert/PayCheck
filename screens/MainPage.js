@@ -7,6 +7,7 @@ import Modal from 'react-native-modal';
 
 import InterfaceFrame from '../components/InterfaceFrame';
 import GoalAdder from '../components/GoalAdder';
+import GoalEditor from '../components/GoalEditor';
 import Spacer from '../components/Spacer';
 import GoalWindow from '../components/GoalWindow';
 
@@ -22,6 +23,8 @@ class MainPage extends Component {
     keyIndex: 0,
     moneyEarned: 0,
     isGoalAdderVisible: false,
+    isGoalEditorVisible: false,
+    goalToEdit: -1,
     isGoogleInfoVisible: false,
     isMoneyLoggerVisible: false,
     firstName: '',
@@ -142,26 +145,31 @@ class MainPage extends Component {
     var user = firebase.auth().currentUser;
 
     if (user) {
-
       //If New Goal...
       if(key == -1) {
         //overwrite with new index
         key = this.state.keyIndex;
+        firebase.database().ref('users/' + user.uid + '/user_app_data/goals/' + key).update({
+          name: goalName,
+          needed: moneyNeeded,
+          earned: 0.0,
+          key: this.state.keyIndex,
+        });
+        this.pullGoals(user);
+        //Increment key index in database, and pull to state
+        firebase.database().ref('users/' + user.uid + '/user_app_data/').update({
+          key_index: this.state.keyIndex + 1, 
+        });
+        this.pullKeyIndex(user);
+      } else { 
+        //Updating Existing Goal
+        firebase.database().ref('users/' + user.uid + '/user_app_data/goals/' + key).update({
+          name: goalName,
+          needed: moneyNeeded,
+          key: this.state.keyIndex,
+        });
+        this.pullGoals(user);
       }
-
-      firebase.database().ref('users/' + user.uid + '/user_app_data/goals/' + key).update({
-        name: goalName,
-        needed: moneyNeeded,
-        earned: 0.0,
-        key: this.state.keyIndex,
-      });
-      this.pullGoals(user);
-
-      //Increment key index in database, and pull to state
-      firebase.database().ref('users/' + user.uid + '/user_app_data/').update({
-        key_index: this.state.keyIndex + 1, 
-      });
-      this.pullKeyIndex(user);
     }
   }
 
@@ -263,8 +271,7 @@ class MainPage extends Component {
     }
   }
 
-  /*
-  updateGoal = (goalName, moneyNeeded) => {
+  updateGoal = (goalName, moneyNeeded, key) => {
     if(isNaN(Number(moneyNeeded))) {
       Alert.alert(
         "Not a Number",
@@ -290,13 +297,12 @@ class MainPage extends Component {
       );
       return "keepName";
     } else {
-      this.writeGoal(goalName, moneyNeeded, 0);
-      this.toggleGoalUpdaterVisible();
+      this.writeGoal(goalName, moneyNeeded, key);
+      this.toggleGoalEditorVisible();
       console.log("Goal Added");
       return "removeBoth";
     }
   }
-  */
 
   removeGoal = (key) => {
     var user = firebase.auth().currentUser;
@@ -309,10 +315,25 @@ class MainPage extends Component {
     }
   }
 
+  editGoal = (key) => {
+    console.log("Main page editGoal called from key " + key);
+    this.setState({
+      goalToEdit: key,
+    });
+    this.toggleGoalEditorVisible();
+  }
+
   toggleGoalAdderVisible = () => {
     let flippedState = !this.state.isGoalAdderVisible;
     this.setState({
       isGoalAdderVisible: flippedState,
+    });
+  }  
+
+  toggleGoalEditorVisible = () => {
+    let flippedState = !this.state.isGoalEditorVisible;
+    this.setState({
+      isGoalEditorVisible: flippedState,
     });
   }  
 
@@ -456,11 +477,23 @@ class MainPage extends Component {
             />
           </Modal>
 
+          <Modal 
+            isVisible={this.state.isGoalEditorVisible}
+            onBackdropPress={() => this.toggleGoalEditorVisible()}
+          >
+            <GoalEditor 
+              updateGoal={this.updateGoal.bind(this)}
+              goalKey={this.state.goalToEdit}
+              toggleVisible={this.toggleGoalEditorVisible.bind(this)} 
+            />
+          </Modal>
+
           
           
           <GoalWindow 
             goals={this.state.goals} 
             removeGoal={this.removeGoal} 
+            editGoal={this.editGoal}
             totalMoneyEarned={this.state.moneyEarned} 
             setGoalMoneyEarned={this.setGoalMoneyEarned}
           />

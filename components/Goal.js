@@ -77,6 +77,11 @@ class Goal extends Component {
     this.props.removeGoal(this.props.goal.key);
   }
 
+  handleEdit = () => {
+    console.log("Goal edit button pressed, for goal key " + this.props.goal.key);
+    this.props.editGoal(this.props.goal.key);
+  }
+
   getProgressColor = () => {
     let percent = this.calculatePercent();
     if(percent <= 25) {
@@ -102,6 +107,7 @@ class Goal extends Component {
             <View style={{width:36, height:36}}>
               <Button
                 color="#FFFFFF"
+                onPress={() => this.handleEdit()}
                 title="✏️"
               /> 
             </View>

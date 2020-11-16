@@ -46,7 +46,7 @@ class GoalWindow extends Component {
                 earned={goal.earned} 
                 goal={goal}
                 removeGoal={this.props.removeGoal}
-                
+                editGoal={this.props.editGoal}
                 returnMoneyEarned={this.props.setGoalMoneyEarned}
                 totalMoneyEarned={this.props.totalMoneyEarned}
               /> 

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { View, Button, TextInput, Text} from 'react-native';
+import firebase from 'firebase';
 const styles = require('../Styles');
 
 //Interface to add Goal Windows to the app
-class GoalUpdater extends Component {
+class GoalEditor extends Component {
     constructor(props) {
       super(props);
       this.state = {
@@ -12,8 +13,51 @@ class GoalUpdater extends Component {
       };  
     }
 
+    componentDidMount() {
+      var user = firebase.auth().currentUser;
+      if(user) {
+        this.setOldName(user);
+        this.setOldMoneyNeeded(user);
+      }
+      
+
+      
+        //console.log("Name is " + oldName + ", needed is " + oldMoneyNeeded);
+      
+    }
+
+    setOldName = (user) => {
+      if(user) {
+        firebase
+          .database()
+          .ref('/users/' + user.uid + '/user_app_data/goals/' + this.props.goalKey + '/name')
+          .on('value', querySnapShot => {
+            let data = querySnapShot.val() ? querySnapShot.val() : {};
+            let name = data;
+            this.setState({
+              goalName: name,
+            });
+          });
+      }
+    }
+
+    setOldMoneyNeeded = (user) => {
+      if(user) {
+        firebase
+          .database()
+          .ref('/users/' + user.uid + '/user_app_data/goals/' + this.props.goalKey + '/needed')
+          .on('value', querySnapShot => {
+            let data = querySnapShot.val() ? querySnapShot.val() : {};
+            let needed = data;
+            this.setState({
+              moneyNeeded: needed,
+            });
+          });
+      }
+    }
+
     updateGoalHandler = () => {
-      let keep = this.props.updateGoal(this.state.goalName, this.state.moneyNeeded);
+      let keep = this.props.updateGoal(this.state.goalName, this.state.moneyNeeded, this.props.goalKey);
       if(keep == "keepName") {
         this.setState({
           moneyNeeded: '',
@@ -33,7 +77,7 @@ class GoalUpdater extends Component {
     } 
   
     render() {
-      console.log("Goal Adder Rendered with Goal Name: " + this.state.goalName);
+      console.log("Goal Editor Rendered for goal, key: " + this.props.goalKey);
       return(
         <View style={{borderColor: '#234041', borderWidth: 1, backgroundColor:'white'}}>
             <View style={{flexDirection:'row', justifyContent:'space-between'}}>
@@ -92,4 +136,4 @@ class GoalUpdater extends Component {
     }  
 }
 
-export default GoalUpdater;
+export default GoalEditor;
