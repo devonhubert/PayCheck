@@ -32,6 +32,10 @@ const styles = StyleSheet.create({
       width: 60,
       height: 60,
     },
+    walletIcon: {
+      width: 50,
+      height: 50,
+    },
     profileImage: {
       width: 50,
       height: 50,

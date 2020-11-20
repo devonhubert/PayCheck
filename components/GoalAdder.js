@@ -13,7 +13,7 @@ class GoalAdder extends Component {
     }
 
     addGoal = () => {
-      let keep = this.props.addGoal(this.state.goalName, this.state.moneyNeeded);
+      let keep = this.props.addGoal(this.state.goalName, Math.ceil(Number(this.state.moneyNeeded)));
       if(keep == "keepName") {
         this.setState({
           moneyNeeded: '',
@@ -69,7 +69,7 @@ class GoalAdder extends Component {
                   <Text style={styles.text}>$</Text>
                   <TextInput
                     style={styles.goalTextInput}
-                    keyboardType="numeric"
+                    keyboardType="number-pad"
                     onChangeText={(moneyNeeded) => this.setState({moneyNeeded})}
                     value={this.state.moneyNeeded}
                     maxLength={10}

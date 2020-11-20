@@ -5,7 +5,7 @@ import {
 import firebase from 'firebase';
 import Modal from 'react-native-modal';
 
-import InterfaceFrame from '../components/InterfaceFrame';
+import Wallet from '../components/Wallet';
 import GoalAdder from '../components/GoalAdder';
 import GoalEditor from '../components/GoalEditor';
 import Spacer from '../components/Spacer';
@@ -16,8 +16,6 @@ const styles = require('../Styles');
 //Main App
 class MainPage extends Component {
 
-  //Load and save goals from database later
-
   state = {
     goals: [],
     keyIndex: 0,
@@ -25,7 +23,6 @@ class MainPage extends Component {
     isGoalAdderVisible: false,
     isGoalEditorVisible: false,
     goalToEdit: -1,
-    isWalletVisible: false,
     isGoogleInfoVisible: false,
     isMoneyLoggerVisible: false,
     firstName: '',
@@ -35,7 +32,7 @@ class MainPage extends Component {
   };
 
   componentDidMount() {
-    console.log("Component mounted (it did)");
+    console.log("MainPage component mounted");
     var user = firebase.auth().currentUser;
 
     if (user) {
@@ -320,15 +317,8 @@ class MainPage extends Component {
 
     if(user) {
       firebase.database().ref('users/' + user.uid + '/user_app_data/goals/' + key).remove();
-      
       this.pullGoals(user);
       console.log("Goal Removed");
-      Alert.alert(
-        "Goal successfully removed!",
-        "Your goal has been removed, and your money been returned to your wallet.",
-        [{text: "OK", onPress: () => console.log("OK Pressed")}],
-        {cancelable: false}
-      );
     }
   }
 
@@ -368,13 +358,6 @@ class MainPage extends Component {
     });
   }  
 
-  toggleWalletVisible = () => {
-    let flippedState = !this.state.isWalletVisible;
-    this.setState({
-      isWalletVisible: flippedState,
-    });
-  }
-
   render() {
     
     console.log("App rendered. Current goal list is: " + this.state.goals);
@@ -382,28 +365,44 @@ class MainPage extends Component {
 
     return (
       <View style={styles.container}>
-        <Spacer numSpaces='7' />
+        {/* Ancestor View */}
+        <Spacer numSpaces='8' />
+
+        {/* Top Menu Bar */}
         <View>      
           <Spacer numSpaces='3' />
           
           <View style={{flexDirection:'row', justifyContent:'space-between', width:370}}>
-            <View>
+
+            {/* PayCheck Logo */}
+            <View style={{flexDirection:'column', justifyContent: 'center'}}>
               <Image source={require('../assets/newLogo.png')} style={styles.logoImage} />
             </View>
 
-            <TouchableOpacity 
-                style={{flexDirection:'column', justifyContent: 'center'}}
-                onPress={this.toggleWalletVisible}
-              >
-              <View>
-                <Image source={require('../assets/wallet_icon.png')} 
-                  style={styles.logoImage}
-                />
-              </View>
-            </TouchableOpacity>
-            
-            <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+            <View style={{flexDirection:'column', justifyContent:'center'}}>
               
+              
+              {/* Wallet Icon Button */}
+              <TouchableOpacity 
+                  style={{flexDirection:'row', justifyContent: 'center', alignSelf:'center'}}
+                  onPress={this.toggleMoneyLoggerVisible}
+                >
+                <View>
+                  <Image source={require('../assets/wallet_icon.png')} 
+                    style={styles.walletIcon}
+                  />
+                </View>
+              </TouchableOpacity>
+               
+              {/* Total Earned Display */}
+              <View style={{alignSelf:'center'}}>
+                <Text style={styles.goalText}>${this.state.moneyEarned}</Text>
+              </View>
+              
+            </View>
+            
+            {/* Google Icon Button */}
+            <View style={{flexDirection:'row', justifyContent:'space-between'}}>
               <TouchableOpacity 
                 style={{flexDirection:'column', justifyContent: 'center'}}
                 onPress={this.toggleGoogleInfoVisible}
@@ -416,29 +415,30 @@ class MainPage extends Component {
                   />
                 </View>
               </TouchableOpacity>
-
             </View>
+
           </View>
+
         </View>
 
+        <Spacer numSpaces='1' /> 
         
-
+        {/* Modals */}
         <View> 
-          <Spacer numSpaces='1' />   
           
-            
-          
-
+          {/* Money Logger */}
           <Modal 
             isVisible={this.state.isMoneyLoggerVisible}
             onBackdropPress={() => this.toggleMoneyLoggerVisible()}
           >
-            <InterfaceFrame 
+            <Wallet 
               returnMoneyEarned={this.addTotalMoneyEarned.bind(this)} 
               toggleVisible={this.toggleMoneyLoggerVisible.bind(this)}
+              moneyEarned={this.state.moneyEarned}
             />
           </Modal>
           
+          {/* Goal Adder */}
           <Modal 
             isVisible={this.state.isGoalAdderVisible}
             onBackdropPress={() => this.toggleGoalAdderVisible()}
@@ -449,6 +449,7 @@ class MainPage extends Component {
             />
           </Modal>
 
+          {/* Goal Editor */}
           <Modal 
             isVisible={this.state.isGoalEditorVisible}
             onBackdropPress={() => this.toggleGoalEditorVisible()}
@@ -460,44 +461,7 @@ class MainPage extends Component {
             />
           </Modal>
 
-          <Modal 
-            isVisible={this.state.isWalletVisible}
-            onBackdropPress={() => this.toggleWalletVisible()}
-          >
-            <View style={{borderColor: '#234041', borderWidth: 1, backgroundColor:'white'}} >
-              <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                <Text style={styles.goalTextHeader}> My Wallet</Text>
-                <View style={{width:36, height:36, flexDirection:'row', justifyContent:'center'}}>
-                  <Button
-                    color="#FFFFFF"
-                    onPress={() => this.toggleWalletVisible()}
-                    title="✖️"
-                  />
-                </View>
-              </View>
-
-              <View style={{alignSelf:'center'}}>
-                <View style={{width:200, flexDirection:'row', justifyContent:'center'}}>
-                  <View style={{padding:5}}>
-                    <Text style={styles.goalText}>Total Earned: ${this.state.moneyEarned}</Text>
-                  </View>
-                </View>
-              </View>
-                    
-              <Spacer numSpaces='1' />
-                  
-              <View style={{flexDirection:'row', justifyContent:'center', padding:5}}>
-                <View style={{width:120, height:36}}>
-                  <Button
-                    color="#234041"
-                    onPress={this.toggleMoneyLoggerVisible}
-                    title="Log Earnings"
-                  />  
-                </View>
-              </View>
-            </View>
-          </Modal>
-
+          {/* Google Information */}
           <Modal 
             isVisible={this.state.isGoogleInfoVisible}
             onBackdropPress={() => this.toggleGoogleInfoVisible()}
@@ -537,6 +501,8 @@ class MainPage extends Component {
             </View>
           </Modal>
 
+
+          {/* Main Goal Window */}
           <GoalWindow 
             goals={this.state.goals} 
             removeGoal={this.removeGoal} 

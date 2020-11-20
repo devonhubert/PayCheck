@@ -4,7 +4,7 @@ import Spacer from './Spacer';
 const styles = require('../Styles');
 
 //Handles user input of money
-class InterfaceFrame extends Component {
+class Wallet extends Component {
     constructor(props) {
       super(props);
       
@@ -14,7 +14,7 @@ class InterfaceFrame extends Component {
     }
     
     addMoney = () => {
-      const toAdd = Number(this.state.text);
+      const toAdd = Math.floor(Number(this.state.text));
       if(isNaN(toAdd)) {
         Alert.alert(
           "Not a Number",
@@ -27,16 +27,15 @@ class InterfaceFrame extends Component {
           text: '',
         });
         this.props.returnMoneyEarned(toAdd);
-        this.props.toggleVisible();
       }
     }
   
     render() {
-      console.log("InterfaceFrame Rendered.");
+      console.log("Wallet Rendered.");
       return (
         <View style={{borderColor: '#234041', borderWidth: 1, backgroundColor:'white'}}>
           <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-            <Text style={styles.goalTextHeader}> Log My Earnings</Text>
+            <Text style={styles.goalTextHeader}> My Wallet</Text>
             <View style={{width:36, height:36, flexDirection:'row', justifyContent:'center'}}>
               <Button
                 color="#FFFFFF"
@@ -46,31 +45,38 @@ class InterfaceFrame extends Component {
               <Text> </Text>
             </View>
           </View>
-          <Spacer numSpaces='1' />
-          <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center', alignSelf:'flex-start'}}>
-            <Text style={styles.text}>  $</Text>
-            <View style={{alignSelf:'flex-start'}}>
-              {/*Money Adding Input*/}
-              <TextInput
-                style={styles.goalTextInput}
-                keyboardType="numeric"
-                onChangeText={(text) => this.setState({text})}
-                value={this.state.text}
-                maxLength={10}
-              />    
+          
+          
+          <View style={{width:200, flexDirection:'row', justifyContent:'flex-start'}}>
+            <View style={{padding:5}}>
+              <Text style={styles.goalText}>   Total Earned: ${this.props.moneyEarned}</Text>
             </View>
           </View>
-            <View style={{width:200, flexDirection:'row', justifyContent:'flex-end', alignSelf:'flex-end', padding:5}}>  
-              <Button
-                color="#234041"
-                onPress={this.addMoney}
-                title="Add to Wallet"
-              />  
-              <Text> </Text>
-            </View>
+          
+          <Spacer numSpaces='1' />
+          <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', alignSelf:'flex-start'}}>
+            <Text style={styles.text}>  $</Text>
+            
+            {/*Money Adding Input*/}
+            <TextInput
+              style={styles.goalTextInput}
+              keyboardType="number-pad"
+              onChangeText={(text) => this.setState({text})}
+              value={this.state.text}
+              maxLength={10}
+            />    
+            
+            <Button
+              color="#234041"
+              onPress={this.addMoney}
+              title="Add to Wallet"
+            />  
+            
+          </View>
+          <Spacer numSpaces='1' />
         </View>
       );
     }
 }
 
-export default InterfaceFrame;
+export default Wallet;

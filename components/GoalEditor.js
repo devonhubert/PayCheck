@@ -19,11 +19,6 @@ class GoalEditor extends Component {
         this.setOldName(user);
         this.setOldMoneyNeeded(user);
       }
-      
-
-      
-        //console.log("Name is " + oldName + ", needed is " + oldMoneyNeeded);
-      
     }
 
     setOldName = (user) => {
@@ -57,7 +52,7 @@ class GoalEditor extends Component {
     }
 
     updateGoalHandler = () => {
-      let keep = this.props.updateGoal(this.state.goalName, this.state.moneyNeeded, this.props.goalKey);
+      let keep = this.props.updateGoal(this.state.goalName, Math.ceil(Number(this.state.moneyNeeded)), this.props.goalKey);
       if(keep == "keepName") {
         this.setState({
           moneyNeeded: '',
@@ -113,7 +108,7 @@ class GoalEditor extends Component {
                   <Text style={styles.text}>$</Text>
                   <TextInput
                     style={styles.goalTextInput}
-                    keyboardType="numeric"
+                    keyboardType="number-pad"
                     onChangeText={(moneyNeeded) => this.setState({moneyNeeded})}
                     value={this.state.moneyNeeded}
                     maxLength={10}
