@@ -24,7 +24,7 @@ class MainPage extends Component {
     isGoalEditorVisible: false,
     goalToEdit: -1,
     isGoogleInfoVisible: false,
-    isMoneyLoggerVisible: false,
+    isWalletVisible: false,
     firstName: '',
     lastName: '',
     userEmail: '',
@@ -35,49 +35,40 @@ class MainPage extends Component {
     console.log("MainPage component mounted");
     var user = firebase.auth().currentUser;
 
+    
+
     if (user) {
-        firebase
-        .database()
-        .ref('/users/' + user.uid + '/first_name')
+        
+      this.getFirebaseRef(user, '/first_name')
         .on('value', querySnapShot => {
           let data = querySnapShot.val() ? querySnapShot.val() : {};
-          let name = data;
           this.setState({
-            firstName: name,
+            firstName: data,
+          });
+        });
+        
+
+      this.getFirebaseRef(user, '/last_name')
+        .on('value', querySnapShot => {
+          let data = querySnapShot.val() ? querySnapShot.val() : {};
+          this.setState({
+            lastName: data,
           });
         });
 
-        firebase
-        .database()
-        .ref('/users/' + user.uid + '/last_name')
+      this.getFirebaseRef(user, '/gmail')
         .on('value', querySnapShot => {
           let data = querySnapShot.val() ? querySnapShot.val() : {};
-          let name = data;
           this.setState({
-            lastName: name,
+            userEmail: data,
           });
         });
 
-        firebase
-        .database()
-        .ref('/users/' + user.uid + '/gmail')
+      this.getFirebaseRef(user, '/profile_picture')
         .on('value', querySnapShot => {
           let data = querySnapShot.val() ? querySnapShot.val() : {};
-          let gmail = data;
           this.setState({
-            userEmail: gmail,
-          });
-        });
-
-        firebase
-        .database()
-        .ref('/users/' + user.uid + '/profile_picture')
-        .on('value', querySnapShot => {
-          let data = querySnapShot.val() ? querySnapShot.val() : {};
-          let profile_picture = data;
-          console.log("Profile picture url: " + profile_picture);
-          this.setState({
-            profilePicUrl: profile_picture,
+            profilePicUrl: data,
           });
         });
         
@@ -87,8 +78,17 @@ class MainPage extends Component {
     } 
   }
 
+  getFirebaseRef = (user, path) => {
+    if(user){
+      console.log("Valid user, pulling from database");
+      return firebase.database().ref('/users/' + user.uid + path);
+    } else {
+      console.log("Invalid user, no access to database");
+      return null;
+    }
+  }
+
   pullMoneyEarned = (user) => {
-    console.log("Pull money earned called");
     //user is not null
     if(user) {
       //pull total amount earned from database
@@ -351,10 +351,10 @@ class MainPage extends Component {
     });
   }  
 
-  toggleMoneyLoggerVisible = () => {
-    let flippedState = !this.state.isMoneyLoggerVisible;
+  toggleWalletVisible = () => {
+    let flippedState = !this.state.isWalletVisible;
     this.setState({
-      isMoneyLoggerVisible: flippedState,
+      isWalletVisible: flippedState,
     });
   }  
 
@@ -385,7 +385,7 @@ class MainPage extends Component {
               {/* Wallet Icon Button */}
               <TouchableOpacity 
                   style={{flexDirection:'row', justifyContent: 'center', alignSelf:'center'}}
-                  onPress={this.toggleMoneyLoggerVisible}
+                  onPress={this.toggleWalletVisible}
                 >
                 <View>
                   <Image source={require('../assets/wallet_icon.png')} 
@@ -428,12 +428,12 @@ class MainPage extends Component {
           
           {/* Money Logger */}
           <Modal 
-            isVisible={this.state.isMoneyLoggerVisible}
-            onBackdropPress={() => this.toggleMoneyLoggerVisible()}
+            isVisible={this.state.isWalletVisible}
+            onBackdropPress={() => this.toggleWalletVisible()}
           >
             <Wallet 
               returnMoneyEarned={this.addTotalMoneyEarned.bind(this)} 
-              toggleVisible={this.toggleMoneyLoggerVisible.bind(this)}
+              toggleVisible={this.toggleWalletVisible.bind(this)}
               moneyEarned={this.state.moneyEarned}
             />
           </Modal>
