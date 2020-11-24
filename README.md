@@ -2,7 +2,7 @@
 *****************************
 Pay ✔️ Check is a mobile app that helps independent contractors budget for their goals on a variable income.
 
-[![PayCheck Demo](http://img.youtube.com/vi/Ef60jaQPqv4/0.jpg)](https://youtu.be/Ef60jaQPqv4 "PayCheck Demo")
+[![PayCheck Demo](./assets/demo_link_icon.png)](https://youtu.be/Ef60jaQPqv4 "PayCheck Demo")
 
 Note: the app has not yet been officially released, and is currently in Alpha. If you want to start using the app, you can follow these steps:
 
